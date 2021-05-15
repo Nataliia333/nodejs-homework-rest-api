@@ -28,15 +28,20 @@ router.get("/:contactId", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
+  if (JSON.stringify(req.body) === "{}") {
+    return res
+      .status(200)
+      .json({
+        status: "no body",
+        code: 400,
+        message: "missing required name field",
+      });
+  }
   try {
     const contact = await Contacts.addContact(req.body);
-    if (contact)
-      return res
-        .status(201)
-        .json({ status: "success", code: 201, data: { contact } });
     return res
-      .status(400)
-      .json({ status: "", code: 400, message: "missing required name field" });
+      .status(201)
+      .json({ status: "success", code: 201, data: { contact } });
   } catch (error) {
     next(error);
   }
@@ -44,6 +49,30 @@ router.post("/", async (req, res, next) => {
 
 router.delete("/:contactId", async (req, res, next) => {
   res.json({ message: "template message" });
+});
+
+router.put("/:contactId", async (req, res, next) => {
+  if (JSON.stringify(req.body) === "{}") {
+    return res
+      .status(200)
+      .json({ status: "no body", code: 400, message: "missing fields" });
+  }
+  try {
+    const contact = await Contacts.updateContact(
+      req.params.contactId,
+      req.body
+    );
+    if (contact) {
+      return res
+        .status(200)
+        .json({ status: "success", code: 200, data: { contact } });
+    }
+    return res
+      .status(404)
+      .json({ status: "error", code: 404, message: "Not Found" });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.patch("/:contactId", async (req, res, next) => {
