@@ -16,7 +16,18 @@ router.get("/:contactId", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-  res.json({ message: "template message" });
+  try {
+    const contact = await Contacts.addContact(req.body);
+    if (contact)
+      return res
+        .status(201)
+        .json({ status: "success", code: 201, data: { contact } });
+    return res
+      .status(400)
+      .json({ status: "", code: 400, message: "missing required name field" });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.delete("/:contactId", async (req, res, next) => {
