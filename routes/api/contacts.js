@@ -93,6 +93,7 @@ router.put("/:contactId", validateUpdateContact, async (req, res, next) => {
 router.patch(
   "/:contactId/favorite",
   validateStatusFavoriteContact,
+  validateUpdateContact,
   async (req, res, next) => {
     if (JSON.stringify(req.body) === "{}") {
       return res.status(200).json({
