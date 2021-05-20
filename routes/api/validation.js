@@ -1,7 +1,12 @@
 const Joi = require("joi");
 
 const schemaAddContact = Joi.object({
-  name: Joi.string().alphanum().min(2).max(30).required(),
+  name: Joi.string()
+    .alphanum()
+    .regex(/[A-Z]\w+/)
+    .min(2)
+    .max(30)
+    .required(),
 
   email: Joi.string()
     .email({
@@ -15,7 +20,12 @@ const schemaAddContact = Joi.object({
 });
 
 const schemaUpdateContact = Joi.object({
-  name: Joi.string().alphanum().min(2).max(30).optional(),
+  name: Joi.string()
+    .alphanum()
+    .regex(/[A-Z]\w+/)
+    .min(2)
+    .max(30)
+    .optional(),
 
   email: Joi.string()
     .email({

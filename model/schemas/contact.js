@@ -1,29 +1,21 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const catSchema = new Schema(
+const contactSchema = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, "Set name for contact"],
     },
-    age: {
-      type: Number,
-      min: 1,
-      max: 45,
+    email: {
+      type: String,
     },
-    isVaccinated: {
+    phone: {
+      type: String,
+    },
+    favorite: {
       type: Boolean,
       default: false,
-    },
-    features: {
-      type: Array,
-      set: (data) => data || [],
-    },
-    owner: {
-      name: String,
-      age: Number,
-      address: String,
     },
   },
   {
@@ -46,11 +38,11 @@ const catSchema = new Schema(
   }
 );
 
-catSchema.path("name").validate((value) => {
+contactSchema.path("name").validate((value) => {
   const re = /[A-Z]\w+/;
   return re.test(String(value));
 });
 
-const Contact = mongoose.model("contact", catSchema);
+const Contact = mongoose.model("contact", contactSchema);
 
 module.exports = Contact;
