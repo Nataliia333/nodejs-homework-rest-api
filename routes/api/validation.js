@@ -10,7 +10,7 @@ const schemaAddContact = Joi.object({
     })
     .required(),
 
-  phone: Joi.number().integer().min(9).max(11).optional(),
+  phone: Joi.string().min(9).max(11).optional(),
 });
 
 const schemaUpdateContact = Joi.object({
@@ -22,7 +22,7 @@ const schemaUpdateContact = Joi.object({
       tlds: { allow: ["com", "net"] },
     })
     .optional(),
-  phone: Joi.number().integer().min(9).max(11).optional(),
+  phone: Joi.string().min(9).max(11).optional(),
 });
 
 const validate = async (schema, body, next) => {
