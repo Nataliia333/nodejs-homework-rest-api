@@ -1,7 +1,12 @@
 const Joi = require("joi");
 
 const schemaAddContact = Joi.object({
-  name: Joi.string().alphanum().min(2).max(30).required(),
+  name: Joi.string()
+    .alphanum()
+    .regex(/[A-Z]\w+/)
+    .min(2)
+    .max(30)
+    .required(),
 
   email: Joi.string()
     .email({
@@ -10,11 +15,17 @@ const schemaAddContact = Joi.object({
     })
     .required(),
 
-  phone: Joi.number().integer().min(9).max(11).optional(),
+  phone: Joi.string().min(9).max(11).optional(),
+  favorite: Joi.boolean().optional(),
 });
 
 const schemaUpdateContact = Joi.object({
-  name: Joi.string().alphanum().min(2).max(30).optional(),
+  name: Joi.string()
+    .alphanum()
+    .regex(/[A-Z]\w+/)
+    .min(2)
+    .max(30)
+    .optional(),
 
   email: Joi.string()
     .email({
@@ -22,7 +33,12 @@ const schemaUpdateContact = Joi.object({
       tlds: { allow: ["com", "net"] },
     })
     .optional(),
-  phone: Joi.number().integer().min(9).max(11).optional(),
+  phone: Joi.string().min(9).max(11).optional(),
+  favorite: Joi.boolean().optional(),
+});
+
+const schemaStatusFavoriteContact = Joi.object({
+  favorite: Joi.boolean().required(),
 });
 
 const validate = async (schema, body, next) => {
@@ -40,4 +56,8 @@ module.exports.validateAddContact = (req, _res, next) => {
 
 module.exports.validateUpdateContact = (req, _res, next) => {
   return validate(schemaUpdateContact, req.body, next);
+};
+
+module.exports.validateStatusFavoriteContact = (req, _res, next) => {
+  return validate(schemaStatusFavoriteContact, req.body, next);
 };
