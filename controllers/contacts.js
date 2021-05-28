@@ -3,6 +3,7 @@ const { HttpCode } = require("../helpers/constants");
 
 const getAll = async (req, res, next) => {
   try {
+    console.log(req.user);
     const contacts = await Contacts.listContacts();
     return res.json({
       status: "success",
