@@ -1,9 +1,14 @@
 const Contacts = require("../model/contacts");
+const { HttpCode } = require("../helpers/constants");
 
 const getAll = async (req, res, next) => {
   try {
     const contacts = await Contacts.listContacts();
-    return res.json({ status: "success", code: 200, data: { contacts } });
+    return res.json({
+      status: "success",
+      code: HttpCode.OK,
+      data: { contacts },
+    });
   } catch (error) {
     next(error);
   }
@@ -14,12 +19,14 @@ const getById = async (req, res, next) => {
     const contact = await Contacts.getContactById(req.params.contactId);
     if (contact) {
       return res
-        .status(200)
-        .json({ status: "success", code: 200, data: { contact } });
+        .status(HttpCode.OK)
+        .json({ status: "success", code: HttpCode.OK, data: { contact } });
     }
-    return res
-      .status(404)
-      .json({ status: "error", code: 404, message: "Not Found" });
+    return res.status(HttpCode.NOT_FOUND).json({
+      status: "error",
+      code: HttpCode.NOT_FOUND,
+      message: "Not Found",
+    });
   } catch (error) {
     next(error);
   }
@@ -27,17 +34,17 @@ const getById = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   if (JSON.stringify(req.body) === "{}") {
-    return res.status(200).json({
+    return res.status(HttpCode.OK).json({
       status: "no body",
-      code: 400,
+      code: HttpCode.BAD_REQUEST,
       message: "missing required name field",
     });
   }
   try {
     const contact = await Contacts.addContact(req.body);
     return res
-      .status(201)
-      .json({ status: "success", code: 201, data: { contact } });
+      .status(HttpCode.CREATED)
+      .json({ status: "success", code: HttpCode.CREATED, data: { contact } });
   } catch (error) {
     next(error);
   }
@@ -48,12 +55,14 @@ const remove = async (req, res, next) => {
     const contact = await Contacts.removeContact(req.params.contactId);
     if (contact) {
       return res
-        .status(200)
-        .json({ status: "success", code: 200, data: { contact } });
+        .status(HttpCode.OK)
+        .json({ status: "success", code: HttpCode.OK, data: { contact } });
     }
-    return res
-      .status(404)
-      .json({ status: "error", code: 404, message: "Not Found" });
+    return res.status(HttpCode.NOT_FOUND).json({
+      status: "error",
+      code: HttpCode.NOT_FOUND,
+      message: "Not Found",
+    });
   } catch (error) {
     next(error);
   }
@@ -61,9 +70,11 @@ const remove = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   if (JSON.stringify(req.body) === "{}") {
-    return res
-      .status(200)
-      .json({ status: "no body", code: 400, message: "missing fields" });
+    return res.status(HttpCode.OK).json({
+      status: "no body",
+      code: HttpCode.BAD_REQUEST,
+      message: "missing fields",
+    });
   }
   try {
     const contact = await Contacts.updateContact(
@@ -72,12 +83,14 @@ const update = async (req, res, next) => {
     );
     if (contact) {
       return res
-        .status(200)
-        .json({ status: "success", code: 200, data: { contact } });
+        .status(HttpCode.OK)
+        .json({ status: "success", code: HttpCode.OK, data: { contact } });
     }
-    return res
-      .status(404)
-      .json({ status: "error", code: 404, message: "Not Found" });
+    return res.status(HttpCode.NOT_FOUND).json({
+      status: "error",
+      code: HttpCode.NOT_FOUND,
+      message: "Not Found",
+    });
   } catch (error) {
     next(error);
   }
