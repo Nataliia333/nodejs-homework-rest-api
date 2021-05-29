@@ -59,10 +59,26 @@ const login = async (req, res, next) => {
   }
 };
 
-const logout = async (req, res, next) => {};
+const logout = async (req, res, next) => {
+  await Users.updateToken(req.user.id, null);
+  return res.status(HttpCode.NO_CONTENT).json({});
+};
 
+const сurrent = async (req, res, next) => {
+  try {
+    const { email, subscription } = req.user;
+    return res.status(HttpCode.OK).json({
+      status: "success",
+      code: HttpCode.OK,
+      data: { email, subscription },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports = {
   signup,
   login,
   logout,
+  сurrent,
 };
