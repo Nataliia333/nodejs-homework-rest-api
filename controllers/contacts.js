@@ -3,12 +3,15 @@ const { HttpCode } = require("../helpers/constants");
 
 const getAll = async (req, res, next) => {
   try {
-    console.log(req.user);
-    const contacts = await Contacts.listContacts();
+    const userId = req.user.id;
+    const { contacts, total, limit, offset } = await Contacts.listContacts(
+      userId,
+      req.query
+    );
     return res.json({
       status: "success",
       code: HttpCode.OK,
-      data: { contacts },
+      data: { total, limit, offset, contacts },
     });
   } catch (error) {
     next(error);
@@ -17,7 +20,8 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
   try {
-    const contact = await Contacts.getContactById(req.params.contactId);
+    const userId = req.user.id;
+    const contact = await Contacts.getContactById(userId, req.params.contactId);
     if (contact) {
       return res
         .status(HttpCode.OK)
@@ -42,7 +46,8 @@ const create = async (req, res, next) => {
     });
   }
   try {
-    const contact = await Contacts.addContact(req.body);
+    const userId = req.user.id;
+    const contact = await Contacts.addContact({ ...req.body, owner: userId });
     return res
       .status(HttpCode.CREATED)
       .json({ status: "success", code: HttpCode.CREATED, data: { contact } });
@@ -53,7 +58,8 @@ const create = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
   try {
-    const contact = await Contacts.removeContact(req.params.contactId);
+    const userId = req.user.id;
+    const contact = await Contacts.removeContact(userId, req.params.contactId);
     if (contact) {
       return res
         .status(HttpCode.OK)
@@ -78,7 +84,9 @@ const update = async (req, res, next) => {
     });
   }
   try {
+    const userId = req.user.id;
     const contact = await Contacts.updateContact(
+      userId,
       req.params.contactId,
       req.body
     );
@@ -97,31 +105,6 @@ const update = async (req, res, next) => {
   }
 };
 
-// async (req, res, next) => {
-//   if (JSON.stringify(req.body) === "{}") {
-//     return res.status(200).json({
-//       status: "no body",
-//       code: 400,
-//       message: "missing field favorite",
-//     });
-//   }
-//   try {
-//     const contact = await Contacts.updateContact(
-//       req.params.contactId,
-//       req.body
-//     );
-//     if (contact) {
-//       return res
-//         .status(200)
-//         .json({ status: "success", code: 200, data: { contact } });
-//     }
-//     return res
-//       .status(404)
-//       .json({ status: "error", code: 404, message: "Not Found" });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
 module.exports = {
   getAll,
   getById,
