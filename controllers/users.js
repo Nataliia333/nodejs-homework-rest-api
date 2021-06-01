@@ -15,7 +15,7 @@ const signup = async (req, res, next) => {
       });
     }
     const newUser = await Users.create(req.body);
-    const { id, email, subscription } = newUser;
+    const { id, email, subscription, avatar } = newUser;
     return res.status(HttpCode.CREATED).json({
       status: "success",
       code: HttpCode.CREATED,
@@ -23,6 +23,7 @@ const signup = async (req, res, next) => {
         id,
         email,
         subscription,
+        avatar,
       },
     });
   } catch (e) {
