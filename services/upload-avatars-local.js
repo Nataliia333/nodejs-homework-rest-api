@@ -22,13 +22,13 @@ class Upload {
 
   async saveAvatarToStatic({ idUser, pathFile, name, oldFile }) {
     await this.transformAvatar(pathFile);
-    const folderUserAvatar = path.join(this.AVATARS_OF_USERS, idUser);
+    const folderUserAvatar = path.join(this.AVATARS_OF_USERS, "avatars");
     await createFolderIsNotExist(folderUserAvatar);
     await fs.rename(pathFile, path.join(folderUserAvatar, name));
     await this.deleteOldAvatar(
       path.join(process.cwd(), this.AVATARS_OF_USERS, oldFile)
     );
-    const avatarUrl = path.normalize(path.join(idUser, name));
+    const avatarUrl = path.normalize(path.join("avatars", name));
     return avatarUrl;
   }
 
